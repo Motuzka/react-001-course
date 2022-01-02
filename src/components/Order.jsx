@@ -1,11 +1,14 @@
 import React from 'react';
+import Shipment from './Shipment';
 
 class Order extends React.Component {
 	renderOrder = (key) => {
 		const burger = this.props.burgers[key];
 		const count = this.props.order[key];
-
 		const isAvailable = burger && burger.status === 'available';
+
+		if (!burger) return null;
+
 		if (!isAvailable) {
 			return <li className='unavailable' key={key}>Извините, {burger ? burger.name : 'бургер'} временно недоступен</li>
 		}
@@ -16,7 +19,7 @@ class Order extends React.Component {
 					<span>{count}</span>
 					шт. {burger.name}
 					<span> {count * burger.price} ₴</span>
-					<button className='cancellItem'>&times;</button>
+					<button className='cancellItem' onClick={() => this.props.deleteFromOrder(key)} >&times;</button>
 				</span>
 			</li>
 		)
@@ -40,13 +43,12 @@ class Order extends React.Component {
 				<ul className="order">
 					{orderIds.map(this.renderOrder)}
 				</ul>
-				<div className="total">
-					<div className="total_wrap">
-						<div className="total_wrap-final">
-							Итого: {total}
-						</div>
-					</div>
-				</div>
+
+				{total > 0 ?
+					(<Shipment total={total} />)
+					:
+					(<div className='nothingSelected'>Выберите блюдо и добавьте к заказу</div>)}
+
 			</div>
 		)
 	}
